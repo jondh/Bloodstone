@@ -318,7 +318,7 @@ public class LoginActivity extends Activity {
 					
 	        	    new_userError.setVisibility(View.INVISIBLE);
 	        	    
-					NewUser newUser = new NewUser(DBhttpRequest.getInstance(), username, password, email, firstname, lastname, "GroupWallet");
+					NewUser newUser = new NewUser(DBhttpRequest.getInstance(), username, password, email, firstname, lastname);
 					newUser.setNewUserListener(new NewUserListener(){
 
 						@Override

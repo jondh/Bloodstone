@@ -65,17 +65,15 @@ public class NewUser extends AsyncTask<String, Void, String> {
 	private String email;
 	private String firstName;
 	private String lastName;
-	private String app;
 	
 	public NewUser(DBhttpRequest _httpRequest, String _userName, String _password, String _email,
-			String _firstName, String _lastName, String _app){
+			String _firstName, String _lastName){
 		httpRequest = _httpRequest;
 		userName = _userName;
 		password = _password;
 		email = _email;
 		firstName = _firstName;
 		lastName = _lastName;
-		app = _app;
 	}
 
 	public void setNewUserListener(NewUserListener _listener) {
@@ -96,7 +94,7 @@ public class NewUser extends AsyncTask<String, Void, String> {
 		nameValuePairs.add(new BasicNameValuePair("email",email));
 		nameValuePairs.add(new BasicNameValuePair("firstName",firstName));
 		nameValuePairs.add(new BasicNameValuePair("lastName",lastName));
-		nameValuePairs.add(new BasicNameValuePair("app",app));
+		nameValuePairs.add(new BasicNameValuePair("bloodstone","1"));
 		String result = httpRequest.sendRequest(nameValuePairs, url);
 		
 		System.out.println(result);
@@ -107,7 +105,6 @@ public class NewUser extends AsyncTask<String, Void, String> {
 				String jResult = jObj.getString("result");
 				if( jResult.contains("success") ){
 					JSONObject userJSON = jObj.getJSONObject("User");
-					JSONObject tokenJSON = jObj.getJSONObject("Token");
 					Profile.getInstance().setProfile(
 							userJSON.getInt("id"),
 							userJSON.getString("username"),
@@ -116,8 +113,8 @@ public class NewUser extends AsyncTask<String, Void, String> {
 							userJSON.getString("lastName"),
 							userJSON.getString("email"),
 							userJSON.getString("fbID"),
-							tokenJSON.getString("Private"),
-							tokenJSON.getString("Public")
+							userJSON.getString("private_access_token"),
+							userJSON.getString("public_access_token")
 					);
 					return "success";
 				}
