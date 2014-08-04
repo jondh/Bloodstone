@@ -15,11 +15,11 @@
     <string name="password">password</string>
     <string name="loginButton">login</string>
     <string name="loginError">Invalid Username/Email or Password</string>
-    <string name="logInURL">http://whereone.com/home/users/loginMobile</string>
-    <string name="newUserURL">http://whereone.com/home/users/addMobile</string>
-    <string name="loginFacebookURL">http://whereone.com/home/users/facebookMobile</string>
-    <string name="logOutURL">http://whereone.com/home/users/logoutMobile</string>
-    <string name="checkLogInURL">http://whereone.com/home/users/loginMobileStatus</string>
+    <string name="logInURL">http://whereone.com/Bloodstone/users/loginAjax</string>
+    <string name="newUserURL">http://whereone.com/Bloodstone/users/addAjax</string>
+    <string name="loginFacebookURL">http://whereone.com/Bloodstone/users/facebookLoginAjax</string>
+    <string name="logOutURL">http://whereone.com/Bloodstone/users/logoutAjax</string>
+    <string name="checkLogInURL">http://whereone.com/Bloodstone/users/loginStatusAjax</string>
     
     <string name="submit">submit</string>
     <string name="login_newUser">new user</string>

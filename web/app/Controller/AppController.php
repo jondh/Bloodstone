@@ -20,6 +20,7 @@
  */
 
 App::uses('Controller', 'Controller');
+App::uses('Security', 'Utility');
 
 /**
  * Application Controller
@@ -31,4 +32,35 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+	
+	public $components = array(
+        'Session',
+        /* add Auth component and set  the urls that will be loaded after the login and logout actions is performed */
+        'Auth' => array(
+        	'authenticate' => array('SaltForm'),
+            'loginRedirect' => array('controller' => 'users', 'action' => 'index'),
+            'logoutRedirect' => array('controller' => 'users', 'action' => 'index')
+        )
+    );
+
+    public function beforeFilter() {
+        
+        parent::beforeFilter();
+        
+        App::import('Vendor', 'Facebook', array(
+			'file' => 'facebook-php-sdk-master' . DS . 'src' . DS . 'facebook.php'
+		));
+
+		$this->Facebook = new Facebook(array(
+			'appId'     =>  '315826831884119',
+			'secret'    =>  '3544fcde9e698c45a35abd597a3409e1'
+
+		));
+        
+        Security::setHash('sha512');
+       	
+    }
+	
 }
+
+?>
