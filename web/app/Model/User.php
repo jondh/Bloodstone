@@ -130,23 +130,25 @@ class User extends AppModel {
      * @return boolean
      */
     function isUniqueUsername($check) {
-        $username = $this->find(
-            'first',
-            array(
+		if(!isset($this->data[$this->name]['id'])){
+			$this->data[$this->name]['id'] = -1;
+		}
+        $username = $this->find('first', array(
+                'conditions' => array(
+                    'User.username' => $check['username'],
+					'User.id !=' => $this->data[$this->name]['id']
+                ),
                 'fields' => array(
                     'User.id',
                     'User.username'
-                ),
-                'conditions' => array(
-                    'User.username' => $check['username']
                 )
             )
         );
- 
+		
         if(!empty($username)){
             return false;
         }else{
-            return true; 
+            return true;
         }
     }
  
@@ -156,47 +158,22 @@ class User extends AppModel {
      * @return boolean
      */
     function isUniqueEmail($check) {
-        $email = $this->find(
-            'first',
-            array(
+		if(!isset($this->data[$this->name]['id'])){
+			$this->data[$this->name]['id'] = -1;
+		}
+        $email = $this->find('first', array(
+                'conditions' => array(
+                    'User.email' => $check['email'],
+					'User.id !=' => $this->data[$this->name]['id']
+                ),
                 'fields' => array(
                     'User.id'
-                ),
-                'conditions' => array(
-                    'User.email' => $check['email']
                 )
             )
         );
  
         if(!empty($email)){
             return false;
-        }else{
-            return true; 
-        }
-    }
-    
-    function isUniqueEmailEdit($check) {
- 		if(!$check['emailEdit']){
- 			return true;
- 		}
-        $email = $this->find(
-            'first',
-            array(
-                'fields' => array(
-                    'User.id'
-                ),
-                'conditions' => array(
-                    'User.email' => $check['emailEdit']
-                )
-            )
-        );
- 
-        if(!empty($email)){
-            if($this->data[$this->alias]['id'] == $email['User']['id']){
-                return true; 
-            }else{
-                return false; 
-            }
         }else{
             return true; 
         }
@@ -496,6 +473,10 @@ class User extends AppModel {
 			
 			if ($this->save($user)) {
 				$result['result'] = 'success';
+				return $result;
+			}
+			else{
+				$result['result'] = $this->validationErrors;
 				return $result;
 			}
 		}

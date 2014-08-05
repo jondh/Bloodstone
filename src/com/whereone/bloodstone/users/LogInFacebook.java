@@ -70,9 +70,9 @@ public class LogInFacebook extends AsyncTask<String, Void, String> {
 							userJSON.getBoolean("bloodstone"),
 							userJSON.getString("fbID"),
 							userJSON.getString("private_access_token"),
-							userJSON.getString("private_access_token"),
+							userJSON.getString("public_access_token"),
 							getDateFromSqlString( userJSON.getString("updated") ),
-							getDateFromSqlString( userJSON.getString("updated") )
+							getDateFromSqlString( userJSON.getString("dateTime") )
 							
 					);
 					return "success";
