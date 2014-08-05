@@ -33,7 +33,7 @@ public class LogOutCurrent {
 	
 	
 	public void checkUser(){
-		if((profile.getUserID() <= 0) || (profile.getUserName().contentEquals(""))){
+		if((profile.getId() <= 0) || (profile.getUsername().contentEquals(""))){
 			listener.checkResult(false, "bad stored profile");
 			return;
 		}

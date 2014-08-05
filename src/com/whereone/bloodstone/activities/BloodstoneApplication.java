@@ -59,9 +59,13 @@ public class BloodstoneApplication extends Application{
 		storedProfile.getString("firstName", ""),
 		storedProfile.getString("lastName", ""),
 		storedProfile.getString("email", ""),
+		storedProfile.getBoolean("aquamarine", false),
+		storedProfile.getBoolean("bloodstone", false),
 		storedProfile.getString("fbID", ""),
 		storedProfile.getString("privateToken", ""),
-		storedProfile.getString("publicToken", "") );
+		storedProfile.getString("publicToken", ""),
+		null,
+		null);
 	}
 	
 }

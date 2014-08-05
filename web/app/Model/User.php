@@ -2,6 +2,13 @@
 class User extends AppModel {
 
 	public $useDbConfig = 'users';
+	
+	public $hasMany = array(
+		'Question' => array(
+			'conditions' => array('Question.active' => '1')
+		),
+		'Response'
+	);
 
     public $validate = array(
         'username' => array(
@@ -250,6 +257,21 @@ class User extends AppModel {
     	}
     }
 	
+    public function getUsersSafe($userIds = -1){
+    	if($userIds > -1){
+    		$users = $this->find('all', array(
+    			'conditions' => array(
+    				'id' => $userIds
+    			),
+				'fields' => array(
+					'id', 'username', 'firstName', 'lastName', 'email', 'aquamarine', 'bloodstone', 'fbID', 'updated', 'dateTime'
+				)
+    		));
+    		
+    		return $users;
+    	}
+    }
+	
 	/* REQUIRED keys in the input data
 	 *	usersExclude => a list of user ids not to be included in the result
 	 *	match => the text to look for when searching the usernames, names, and emails
@@ -328,6 +350,17 @@ class User extends AppModel {
 		return $result;
 	}
 	
+	public function getUserFromFbId($fbId = -1){
+		if($fbId != -1){
+			$user = $this->find('first', array(
+				'conditions' => array(
+					'fbID' => $fbId
+				)
+			));
+			return $user;
+		}
+	}
+	
 	public function getUser($id = -1){
 		if($id > -1){
 			$user = $this->find('first', array(
@@ -335,6 +368,48 @@ class User extends AppModel {
 					'id' => $id
 				)
 			));
+			
+			return $user;
+		}
+	}
+	
+	public function getUserAndData($id = -1){
+		if($id > -1){
+			$this->Question->unbindModel(
+				array(
+					'belongsTo' => array('User')
+				)
+			);
+			$this->Response->unbindModel(
+				array(
+					'belongsTo' => array('User')
+				)
+			);
+			$this->recursive = 2;
+			$user = $this->find('first', array(
+				'conditions' => array(
+					'id' => $id
+				)
+			));
+			$this->recursive = -1;
+			$user_ids = array();
+			if($user){ // get unique user_ids
+				foreach( $user['Question'] as $question ){
+					foreach( $question['Response'] as $response ){
+						if(!in_array($response['user_id'], $user_ids)){
+							array_push($user_ids, $response['user_id']);
+						}
+					}
+				}
+				foreach( $user['Response'] as $response ){
+					if(!in_array($response['Question']['user_id'], $user_ids)){
+						array_push($user_ids, $response['Question']['user_id']);
+					}
+				}
+			}
+			
+			$user['Users'] = $this->getUsersSafe($user_ids);
+			
 			return $user;
 		}
 	}
@@ -368,6 +443,7 @@ class User extends AppModel {
 	public function add($data){
 		$data['dateTime'] = null;
 		$data['updated'] = 'NOW()';
+		$data['bloodstone'] = '1';
 		$data['salt'] = Security::generateAuthKey();
 		if ($this->save($data)) {
 			$result['result'] = "success";
@@ -380,6 +456,37 @@ class User extends AppModel {
 			return $result;
 		}
     }
+	
+	public function addFromFacebook($user_profile = 0){
+		if($user_profile != 0){
+			$this->User->create();
+			if( !array_key_exists('username', $user_profile) ){
+				$user_profile['username'] = substr($user_profile['first_name'], 0, 1) . $user_profile['last_name'];
+			}
+			
+			$user_profile['password'] = "000000";
+			$user_profile['firstName'] = $user_profile['first_name'];
+			$user_profile['lastName'] = $user_profile['last_name'];
+			$user_profile['bloodstone'] = '1';
+			$user_profile['fbID'] = $user_profile['id'];
+			unset($user_profile['id']);
+			$user_profile['salt'] = Security::generateAuthKey();
+			$user_profile['private_access_token'] = Security::generateAuthKey();
+			$user_profile['public_access_token'] = Security::generateAuthKey();
+			if ($this->save($user_profile)) {
+				$result['result'] = "success";
+				$result['id'] = $this->id;
+				return $result;
+			}
+			else{
+				$result['result'] = "faliure";
+				$result['errors'] = $this->validationErrors;
+				return $result;
+			}
+		}
+		$result['result'] = "faliure";
+		return $result;
+	}
 	
 	public function generateNewTokens($id = -1){
 		if($id > -1){

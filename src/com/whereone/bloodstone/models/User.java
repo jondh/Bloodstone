@@ -7,132 +7,64 @@
 
 package com.whereone.bloodstone.models;
 
-import android.graphics.Bitmap;
+import java.util.Date;
 
 public class User {
-	protected Integer userID;
-	protected String fbID;
-	protected String email;
-	protected String userName;
+	protected Integer id;
+	protected String username;
 	protected String firstName;
 	protected String lastName;
-	protected String dateTime;
-	private String picURL;
-	private Bitmap picture;
-	private Double walletAmount;
-	private Double totalAmount;
-	private Boolean walletAmountRefresh;
-	private Boolean totalAmountRefresh;
+	protected String email;
+	protected Boolean aquamarine;
+	protected Boolean bloodstone;
+	protected String fbID;
+	protected Date updated;
+	protected Date created;
 	
 	public User(){
-		userID = 0;
-		fbID = "";
-		email = "";
-		userName = "";
+		id = 0;
+		username = "";
 		firstName = "";
 		lastName = "";
-		picURL = "";
-		dateTime = "";
-		picture = null;
-		walletAmount = 0.0;
-		totalAmount = 0.0;
-		walletAmountRefresh = true;
-		totalAmountRefresh = true;
+		email = "";
+		aquamarine = false;
+		bloodstone = false;
+		fbID = "";
+		updated = null;
+		created = null;
 	}
 	
-	public User(Integer _userID, String _userName, String _firstName, String _lastName, String _email, String _fbID){
-		userID = _userID;
-		fbID = _fbID;
-		email = _email;
-		userName = _userName;
-		firstName = _firstName;
-		lastName = _lastName;
-		walletAmount = 0.0;
-		totalAmount = 0.0;
-		picURL = "";
-		dateTime = "";
-		picture = null;
-		walletAmountRefresh = true;
-		totalAmountRefresh = true;
+	public User(Integer id, String username, String firstName, String lastName, String email, Boolean aquamarine, Boolean bloodstone, String fbID, Date updated, Date created){
+		this.id = id;
+		this.username = username;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.aquamarine = aquamarine;
+		this.bloodstone = bloodstone;
+		this.fbID = fbID;
+		this.updated = updated;
+		this.created = created;
 	}
 	
-	public User(Integer _userID, String _userName, String _firstName, String _lastName, String _email, String _fbID, String _dateTime){
-		userID = _userID;
-		fbID = _fbID;
-		email = _email;
-		userName = _userName;
-		firstName = _firstName;
-		lastName = _lastName;
-		walletAmount = 0.0;
-		totalAmount = 0.0;
-		picURL = "";
-		dateTime = _dateTime;
-		picture = null;
-		walletAmountRefresh = true;
-		totalAmountRefresh = true;
+	public void setId(Integer id){
+		this.id = id;
+	}
+	public void setUsername(String username){
+		this.username = username;
+	}
+	public void setFirstName(String firstName){
+		this.firstName = firstName;
+	}
+	public void setLastName(String lastName){
+		this.lastName = lastName;
 	}
 	
-	public User(Integer _userID, String _userName, String _firstName, String _lastName, String _email, String _fbID, Double _walletAmount, Double _totalAmount){
-		userID = _userID;
-		fbID = _fbID;
-		email = _email;
-		userName = _userName;
-		firstName = _firstName;
-		lastName = _lastName;
-		walletAmount = _walletAmount;
-		totalAmount = _totalAmount;
-		picURL = "";
-		dateTime = "";
-		picture = null;
-		walletAmountRefresh = true;
-		totalAmountRefresh = true;
+	public Integer getId(){
+		return id;
 	}
-	
-	public void setUserID(Integer _userID){
-		userID = _userID;
-	}
-	public void setFB(String _fbID){
-		fbID = _fbID;
-	}
-	public void setUserName(String _userName){
-		userName = _userName;
-	}
-	public void setFirstName(String _firstName){
-		firstName = _firstName;
-	}
-	public void setLastName(String _lastName){
-		lastName = _lastName;
-	}
-	public void setEmail(String _email){
-		email = _email;
-	}
-	public void setPicURL(String _picURL){
-		picURL = _picURL;
-	}
-	public void setPicture(Bitmap _picture){
-		picture = _picture;
-	}
-	public void setWalletAmount(Double _walletAmount){
-		walletAmount = _walletAmount;
-	}
-	public void setTotalAmount(Double _totalAmount){
-		totalAmount = _totalAmount;
-	}
-	public void setWalletAmountRefresh(Boolean _walletAmountRefresh){
-		walletAmountRefresh = _walletAmountRefresh;
-	}
-	public void setTotalAmountRefresh(Boolean _totalAmountRefresh){
-		totalAmountRefresh = _totalAmountRefresh;
-	}
-	
-	public Integer getUserID(){
-		return userID;
-	}
-	public String getFbID(){
-		return fbID;
-	}
-	public String getUserName(){
-		return userName;
+	public String getUsername(){
+		return username;
 	}
 	public String getFirstName(){
 		return firstName;
@@ -146,31 +78,19 @@ public class User {
 	public String getEmail(){
 		return email;
 	}
-	public String getPicURL(){
-		return picURL;
+	public Boolean usedAquamarine(){
+		return aquamarine;
 	}
-	public Double getWalletAmount(){
-		return walletAmount;
+	public Boolean usedBloodstone(){
+		return bloodstone;
 	}
-	public Double getTotalAmount(){
-		return totalAmount;
+	public String getFbId(){
+		return fbID;
 	}
-	public Bitmap getPicture(){
-		return picture;
+	public Date getDateUpdated(){
+		return updated;
 	}
-	public Boolean isWalletAmountRefresh(){
-		return walletAmountRefresh;
-	}
-	public Boolean isTotalAmountRefresh(){
-		return totalAmountRefresh;
-	}
-	
-	public void findPicURL(){
-		if(fbID != null){
-			picURL = "http://graph.facebook.com/"+fbID+"/picture?type=normal";
-		}
-		else{
-			picURL = "http://jondh.com/GroupWallet/userPhotos/user"+userID+".jpg";
-		}
+	public Date getDateCreated(){
+		return created;
 	}
 }

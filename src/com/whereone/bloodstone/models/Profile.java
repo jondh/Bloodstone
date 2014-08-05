@@ -14,15 +14,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import android.graphics.Bitmap;
-
 
 public class Profile extends User{
 	private String password;
 	private String private_token;
 	private String public_token;
+	
 	private String currentDate;
-	private Bitmap pic;
+
 	private static Profile instance;
 	
 	private Profile(){
@@ -32,13 +31,15 @@ public class Profile extends User{
 	public static void init(){
 		if(instance == null){
 			instance = new Profile();
-			instance.userID = 0;
+			instance.id = 0;
+			instance.username = "";
 			instance.password = "";
-			instance.email = "";
-			instance.userName = "";
 			instance.firstName = "";
 			instance.lastName = "";
-			instance.fbID = null;
+			instance.email = "";
+			instance.aquamarine = false;
+			instance.bloodstone = false;
+			instance.fbID = "";
 			instance.private_token = "";
 			instance.public_token = "";
 		}
@@ -48,51 +49,38 @@ public class Profile extends User{
 		return instance;
 	}
 	
-	public void setProfile(Integer _userID, String _userName, String _password, String _firstName, String _lastName, String _email, String _fbID){
+	public void setProfile(Integer id, String username, String password, String firstName, String lastName, String email, Boolean aquamarine, Boolean bloodstone, String fbID, String private_token, String public_token, Date updated, Date created){
 		if(instance == null) init();
-		instance.userID = _userID;
-		instance.password = _password;
-		instance.email = _email;
-		instance.userName = _userName;
-		instance.firstName = _firstName;
-		instance.lastName = _lastName;
-		instance.fbID = _fbID;
-	}
-	
-	public void setProfile(Integer _userID, String _userName, String _password, String _firstName, String _lastName, String _email, String _fbID, String _private_token, String _public_token){
-		if(instance == null) init();
-		instance.userID = _userID;
-		instance.password = _password;
-		instance.email = _email;
-		instance.userName = _userName;
-		instance.firstName = _firstName;
-		instance.lastName = _lastName;
-		instance.fbID = _fbID;
-		instance.private_token = _private_token;
-		instance.public_token = _public_token;
+		instance.id = id;
+		instance.username = username;
+		instance.password = password;
+		instance.email = email;
+		instance.firstName = firstName;
+		instance.lastName = lastName;
+		instance.aquamarine = aquamarine;
+		instance.bloodstone = bloodstone;
+		instance.fbID = fbID;
+		instance.private_token = private_token;
+		instance.public_token = public_token;
+		instance.updated = updated;
+		instance.created = created;
 	}
 	
 	public void setPassword(String _password){
 		if(instance == null) init();
 		instance.password = _password;
 	}
-	public void setPic(Bitmap _pic){
-		if(instance == null) init();
-		instance.pic = _pic;
-	}
+	
 	public String getPassword(){
 		return password;
 	}
-	
 	public String getPrivateToken(){
 		return private_token;
 	}
 	public String getPublicToken(){
 		return public_token;
 	}
-	public Bitmap getPic(){
-		return pic;
-	}
+	
 	public String getCurrentDate(){
 		if(currentDate == null) return "";
 		return currentDate;

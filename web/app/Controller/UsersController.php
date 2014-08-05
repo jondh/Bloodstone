@@ -13,6 +13,7 @@
 			
 		}
 	
+		// logs in, gets all user's data if successful
 		public function loginAjax(){
 			$this->layout = 'ajax';
 			if ($this->request->is('post')) {
@@ -20,7 +21,7 @@
 				$this->request->data['User']['password'] = $this->request->data['password'];
 				if ($this->Auth->login()) {
 					$resultAuth = $this->User->generateNewTokens($this->Auth->user('id'));
-					$result = $this->User->getUser($this->Auth->user('id'));
+					$result = $this->User->getUserAndData($this->Auth->user('id'));
 					$result['result'] = $resultAuth['result'];
 					return new CakeResponse(array('body' => json_encode($result)));
           	  	}
@@ -105,79 +106,23 @@
 					
 						$user_profile = $this->Facebook->api('/me','GET');
 						
-						$user = $this->User->find('first', array(
-							'conditions' => array(
-								'fbID' => $this->request->data['fbID']
-							)
-						));
+						$user = $this->User->getUserFromFbId($this->request->data['fbID']);
 						
 						if($user){
-							unset($user['User']['password']);
-							unset($user['User']['salt']);
-							unset($user['User']['public_access_token']);
-							unset($user['User']['private_access_token']);
-							$this->User->set($user);
-							if($user['User']['firstName'] != $user_profile['first_name']){
-								$this->User->saveField('firstName', $user_profile['first_name']);
-							}
-							if($user['User']['lastName'] != $user_profile['last_name']){
-								$this->User->saveField('lastName', $user_profile['last_name']);
-							}
-							if($user['User']['email'] != $user_profile['email']){
-								$this->User->saveField('email', $user_profile['email']);
-							}
-							$user['Token']['Private'] = Security::generateAuthKey();
-							$user['Token']['Public'] = Security::generateAuthKey();
+							$user_profile['fbID'] = $user_profile['id'];
+							$user_profile['id'] = $user['User']['id'];
 							
-							if ($this->User->saveField('public_access_token', $user['Token']['Public'])) {
-								if ($this->User->saveField('private_access_token', $user['Token']['Private'])) {
-									$user['result'] = 'success';
-									return new CakeResponse(array('body' => json_encode($user)));
-								}
-							}
-							$user['result'] = 'failure';
-							return new CakeResponse(array('body' => json_encode($user)));
+							$editResult = $this->User->edit($user_profile);
+							$resultAuth = $this->User->generateNewTokens($user['User']['id']);
+							$result = $this->User->getUserAndData($user['User']['id']);
+							$result['result'] = $resultAuth['result'];
+							return new CakeResponse(array('body' => json_encode($result)));
 						}
 						else if($this->request->data['new'] == 'true'){
-							$this->User->create();
-							if( array_key_exists('username', $user_profile) ){
-								$this->request->data['User']['username'] = $user_profile['username'];
-							}
-							else{
-								$this->request->data['User']['username'] = substr($user_profile['first_name'], 0, 1) . $user_profile['last_name'];
-							}
-							$this->request->data['User']['password'] = "000000";
-							$this->request->data['User']['email'] = $user_profile['email'];
-							$this->request->data['User']['firstName'] = $user_profile['first_name'];
-							$this->request->data['User']['lastName'] = $user_profile['last_name'];
-							$this->request->data['User']['fbID'] = $this->request->data['fbID'];
-							$this->request->data['User']['salt'] = Security::generateAuthKey();
-							if ($this->User->saveAll($this->request->data)) {
-								$user['User'] = $this->request->data['User'];
-								$user['Token']['Private'] = Security::generateAuthKey();
-								$user['Token']['Public'] = Security::generateAuthKey();
-								$userID = $this->User->find('first', array(
-									'conditions' => array(
-										'fbID' => $this->request->data['fbID']
-									),
-									'fields' => array(
-										'id'
-									)
-								));
-								$user['User']['id'] = $userID['User']['id'];
-								$this->User->set($this->request->data);
-								if ($this->User->saveField('public_access_token', $user['Token']['Public'])) {
-									if ($this->User->saveField('private_access_token', $user['Token']['Private'])) {
-										if( $this->User->saveField('password', '111111') ){
-											$user['result'] = 'success';
-											return new CakeResponse(array('body' => json_encode($user)));
-										}
-									}
-								}
-							}
-							$user['result'] = 'failure';
-							$user['errors'] = $this->User->validationErrors;
-							return new CakeResponse(array('body' => json_encode($user)));
+							$resultAdd = $this->User->addFromFacebook($user_profile);
+							$result = $this->User->getUserAndData($resultAdd['id']);
+							$result['result'] = $resultAdd['result'];
+							return new CakeResponse(array('body' => json_encode($result)));
 						}
 						
 						$user['result'] = 'none';

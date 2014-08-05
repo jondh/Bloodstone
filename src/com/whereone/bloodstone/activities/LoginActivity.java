@@ -330,13 +330,15 @@ public class LoginActivity extends Activity {
 						@Override
 						public void newUserComplete(String result) {
 							if(result.contains("success")){
-		        	   			profileEdit.putInt("id", Profile.getInstance().getUserID());
-		        	   			profileEdit.putString("username", Profile.getInstance().getUserName());
+		        	   			profileEdit.putInt("id", Profile.getInstance().getId());
+		        	   			profileEdit.putString("username", Profile.getInstance().getUsername());
 		        	   			profileEdit.putString("password", Profile.getInstance().getPassword());
 		        	   			profileEdit.putString("firstName", Profile.getInstance().getFirstName());
 		        	   			profileEdit.putString("lastName", Profile.getInstance().getLastName());
 		        	   			profileEdit.putString("email", Profile.getInstance().getEmail());
-		        	   			profileEdit.putString("fbID", Profile.getInstance().getFbID());
+		        	   			profileEdit.putBoolean("aquamarine", Profile.getInstance().usedAquamarine());
+		        	   			profileEdit.putBoolean("bloodstone", Profile.getInstance().usedBloodstone());
+		        	   			profileEdit.putString("fbID", Profile.getInstance().getFbId());
 		        	   			profileEdit.putString("privateToken", Profile.getInstance().getPrivateToken());
 		        	   			profileEdit.putString("publicToken", Profile.getInstance().getPublicToken());
 		        	   			profileEdit.commit();
@@ -403,13 +405,15 @@ public class LoginActivity extends Activity {
         	   		@Override
         	   		public void logInComplete(String result){
         	   			if(result.contains("success")){
-	        	   			profileEdit.putInt("id", Profile.getInstance().getUserID());
-	        	   			profileEdit.putString("username", Profile.getInstance().getUserName());
+        	   				profileEdit.putInt("id", Profile.getInstance().getId());
+	        	   			profileEdit.putString("username", Profile.getInstance().getUsername());
 	        	   			profileEdit.putString("password", Profile.getInstance().getPassword());
 	        	   			profileEdit.putString("firstName", Profile.getInstance().getFirstName());
 	        	   			profileEdit.putString("lastName", Profile.getInstance().getLastName());
 	        	   			profileEdit.putString("email", Profile.getInstance().getEmail());
-	        	   			profileEdit.putString("fbID", Profile.getInstance().getFbID());
+	        	   			profileEdit.putBoolean("aquamarine", Profile.getInstance().usedAquamarine());
+	        	   			profileEdit.putBoolean("bloodstone", Profile.getInstance().usedBloodstone());
+	        	   			profileEdit.putString("fbID", Profile.getInstance().getFbId());
 	        	   			profileEdit.putString("privateToken", Profile.getInstance().getPrivateToken());
 	        	   			profileEdit.putString("publicToken", Profile.getInstance().getPublicToken());
 	        	   			profileEdit.commit();
@@ -500,13 +504,15 @@ public class LoginActivity extends Activity {
 			@Override
 			public void LoginComplete(String result) {
 				if(result.contains("success")){
-					profileEdit.putInt("id", Profile.getInstance().getUserID());
-    	   			profileEdit.putString("username", Profile.getInstance().getUserName());
+					profileEdit.putInt("id", Profile.getInstance().getId());
+    	   			profileEdit.putString("username", Profile.getInstance().getUsername());
     	   			profileEdit.putString("password", Profile.getInstance().getPassword());
     	   			profileEdit.putString("firstName", Profile.getInstance().getFirstName());
     	   			profileEdit.putString("lastName", Profile.getInstance().getLastName());
     	   			profileEdit.putString("email", Profile.getInstance().getEmail());
-    	   			profileEdit.putString("fbID", Profile.getInstance().getFbID());
+    	   			profileEdit.putBoolean("aquamarine", Profile.getInstance().usedAquamarine());
+    	   			profileEdit.putBoolean("bloodstone", Profile.getInstance().usedBloodstone());
+    	   			profileEdit.putString("fbID", Profile.getInstance().getFbId());
     	   			profileEdit.putString("privateToken", Profile.getInstance().getPrivateToken());
     	   			profileEdit.putString("publicToken", Profile.getInstance().getPublicToken());
     	   			profileEdit.commit();

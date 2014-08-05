@@ -45,7 +45,12 @@
 
 package com.whereone.bloodstone.users;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -112,9 +117,13 @@ public class NewUser extends AsyncTask<String, Void, String> {
 							userJSON.getString("firstName"),
 							userJSON.getString("lastName"),
 							userJSON.getString("email"),
+							userJSON.getBoolean("aquamarine"),
+							userJSON.getBoolean("bloodstone"),
 							userJSON.getString("fbID"),
 							userJSON.getString("private_access_token"),
-							userJSON.getString("public_access_token")
+							userJSON.getString("public_access_token"),
+							getDateFromSqlString( userJSON.getString("updated") ),
+							getDateFromSqlString( userJSON.getString("created") )
 					);
 					return "success";
 				}
@@ -171,5 +180,15 @@ public class NewUser extends AsyncTask<String, Void, String> {
 		public void newUserPreExecute();
 		public void newUserComplete(String _userID);
 		public void newUserCancelled();
+	}
+	
+	public Date getDateFromSqlString(String sql){
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
+		try {
+			return formatter.parse(sql);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

@@ -57,7 +57,7 @@ public class LogInStatus extends AsyncTask<String, Void, Boolean> {
 		
 		String url = arg0[0];
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		nameValuePairs.add(new BasicNameValuePair("user_id", profile.getUserID().toString()));
+		nameValuePairs.add(new BasicNameValuePair("user_id", profile.getId().toString()));
 		nameValuePairs.add(new BasicNameValuePair("public_token", profile.getPublicToken()));
 		nameValuePairs.add(new BasicNameValuePair("private_token", profile.hashedPrivate()));
 		nameValuePairs.add(new BasicNameValuePair("timeStamp", profile.getCurrentDate()));

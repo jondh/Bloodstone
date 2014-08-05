@@ -125,8 +125,8 @@ public class UsersController extends SQLiteOpenHelper {
 			User user = new User();
 			user.setFirstName(cursor.getString(cursor.getColumnIndex(COLUMN_FIRSTNAME)));
 			user.setLastName(cursor.getString(cursor.getColumnIndex(COLUMN_LASTNAME)));
-			user.setUserName(cursor.getString(cursor.getColumnIndex(COLUMN_USERNAME)));
-			user.setUserID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+			user.setUsername(cursor.getString(cursor.getColumnIndex(COLUMN_USERNAME)));
+			user.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
 			databaseR.close();
 			return user;  
         }
@@ -248,6 +248,10 @@ public class UsersController extends SQLiteOpenHelper {
 	                		 cursor.getString(cursor.getColumnIndex(COLUMN_FIRSTNAME)),
 	                		 cursor.getString(cursor.getColumnIndex(COLUMN_LASTNAME)),
 	                		 cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL)),
+	                		 false,
+	                		 false,
+	                		 "",
+	                		 null,
 	                		 null
 	                	));
 	             }
@@ -285,6 +289,10 @@ public class UsersController extends SQLiteOpenHelper {
         		 cursor.getString(cursor.getColumnIndex(COLUMN_FIRSTNAME)),
         		 cursor.getString(cursor.getColumnIndex(COLUMN_LASTNAME)),
         		 cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL)),
+        		 false,
+        		 false,
+        		 "",
+        		 null,
         		 null
         	));
              
@@ -303,8 +311,8 @@ public class UsersController extends SQLiteOpenHelper {
 		}
 		SQLiteDatabase databaseW = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put("id", user.getUserID());
-		values.put("username", user.getUserName());
+		values.put("id", user.getId());
+		values.put("username", user.getUsername());
 		values.put("firstname", user.getFirstName());
 		values.put("lastname", user.getLastName());
 		values.put("email", user.getEmail());
@@ -312,10 +320,10 @@ public class UsersController extends SQLiteOpenHelper {
 			databaseW.insertOrThrow(TABLE_USERS, null, values);
 		}
 		catch (SQLiteConstraintException e){
-			Log.i("Wallet Constraint Exception", user.getUserID() + " duplicate");
+			Log.i("Wallet Constraint Exception", user.getId() + " duplicate");
 		}
 		catch (NullPointerException e){
-			Log.i("UserCont insertUser", "NullPointerException " + user.getUserID() + " " + user.getName());
+			Log.i("UserCont insertUser", "NullPointerException " + user.getId() + " " + user.getName());
 		}
 		databaseW.close();
 		insertAccess.release();
@@ -326,8 +334,8 @@ public class UsersController extends SQLiteOpenHelper {
 		for(Integer i = 0; i < users.size(); i++){
 			User curUser = users.get(i);
 			ContentValues values = new ContentValues();
-			values.put("id", curUser.getUserID());
-			values.put("username", curUser.getUserName());
+			values.put("id", curUser.getId());
+			values.put("username", curUser.getUsername());
 			values.put("firstname", curUser.getFirstName());
 			values.put("lastname", curUser.getLastName());
 			values.put("email", curUser.getEmail());
@@ -335,7 +343,7 @@ public class UsersController extends SQLiteOpenHelper {
 				databaseW.insertOrThrow(TABLE_USERS, null, values);
 			}
 			catch (SQLiteConstraintException e){
-				Log.i("Wallet Constraint Exception", curUser.getUserID() + " duplicate");
+				Log.i("Wallet Constraint Exception", curUser.getId() + " duplicate");
 			}
 		}
 		databaseW.close();
