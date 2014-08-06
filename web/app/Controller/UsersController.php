@@ -83,11 +83,12 @@
 			if($this->request->is('post')){
 				$addResult = $this->User->add($this->request->data);
 				if($addResult['result'] == 'success'){
-					$resultAuth = $this->User->generateNewTokens($addResult['id']);
 					$result = $this->User->getUser($addResult['id']);
-					$result['result'] = $resultAuth['result'];
+					$result['result'] = $addResult['result'];
 					return new CakeResponse(array('body' => json_encode($result)));
 				}
+				
+				return new CakeResponse(array('body' => json_encode($addResult)));
 			}
 			$result['result'] = 'failure';
 			return new CakeResponse(array('body' => json_encode($result)));

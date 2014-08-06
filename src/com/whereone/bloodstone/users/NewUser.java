@@ -123,7 +123,7 @@ public class NewUser extends AsyncTask<String, Void, String> {
 							userJSON.getString("private_access_token"),
 							userJSON.getString("public_access_token"),
 							getDateFromSqlString( userJSON.getString("updated") ),
-							getDateFromSqlString( userJSON.getString("created") )
+							getDateFromSqlString( userJSON.getString("dateTime") )
 					);
 					return "success";
 				}

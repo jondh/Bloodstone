@@ -131,12 +131,15 @@ class User extends AppModel {
      */
     function isUniqueUsername($check) {
 		if(!isset($this->data[$this->name]['id'])){
-			$this->data[$this->name]['id'] = -1;
+			$id = -1;
+		}
+		else{
+			$id = $this->data[$this->name]['id'];
 		}
         $username = $this->find('first', array(
                 'conditions' => array(
                     'User.username' => $check['username'],
-					'User.id !=' => $this->data[$this->name]['id']
+					'User.id !=' => $id
                 ),
                 'fields' => array(
                     'User.id',
@@ -159,12 +162,15 @@ class User extends AppModel {
      */
     function isUniqueEmail($check) {
 		if(!isset($this->data[$this->name]['id'])){
-			$this->data[$this->name]['id'] = -1;
+			$id = -1;
+		}
+		else{
+			$id = $this->data[$this->name]['id'];
 		}
         $email = $this->find('first', array(
                 'conditions' => array(
                     'User.email' => $check['email'],
-					'User.id !=' => $this->data[$this->name]['id']
+					'User.id !=' => $id
                 ),
                 'fields' => array(
                     'User.id'
@@ -249,83 +255,6 @@ class User extends AppModel {
     	}
     }
 	
-	/* REQUIRED keys in the input data
-	 *	usersExclude => a list of user ids not to be included in the result
-	 *	match => the text to look for when searching the usernames, names, and emails
-	 *	start => the start indicy of the result
-	 *	length => the maximum number of results to return
-	 */
-	public function findUsersPage($data){
-		$user = $this->find('all', array(
-			'conditions' => array(
-				'NOT' => array(
-					'id' => (array) $data['usersExclude']
-				),
-				'OR' => array(
-				'User.username LIKE'=>'%'.$data['match'].'%',
-				'User.firstName LIKE'=>'%'.$data['match'].'%',
-				'User.lastName LIKE'=>'%'.$data['match'].'%',
-				'User.email LIKE'=>'%'.$data['match'].'%'
-				)
-			),
-			'order' => 'username ASC',
-			'offset' => $data['start'],
-			'limit' => $data['length']
-		));
-		if($user){
-			$result['empty'] = false;
-			for($i = 0; $i < count($user); $i++){
-				unset($user[$i]['User']['password']);
-				unset($user[$i]['User']['salt']);
-				unset($user[$i]['User']['public_access_token']);
-				unset($user[$i]['User']['private_access_token']);
-			}
-			$result['users'] = $user;
-		}
-		else{
-			$result['empty'] = true;
-		}
-		$result['result'] = 'success';
-		return $result;
-	}
-	
-	/* REQUIRED keys in the input data -> same as above except
-	 *	coach_pool => a list of coach (user) ids that the result set has to be a part of
-	 */
-	public function findUsersPageFromIds($data){
-		$user = $this->find('all', array(
-			'conditions' => array(
-				'id' => (array) $data['coach_pool'],
-				'NOT' => array(
-					'id' => (array) $data['usersExclude']
-				),
-				'OR' => array(
-				'User.username LIKE'=>'%'.$data['match'].'%',
-				'User.firstName LIKE'=>'%'.$data['match'].'%',
-				'User.lastName LIKE'=>'%'.$data['match'].'%',
-				'User.email LIKE'=>'%'.$data['match'].'%'
-				)
-			),
-			'order' => 'username ASC',
-			'offset' => $data['start'],
-			'limit' => $data['length']
-		));
-		if($user){
-			$result['empty'] = false;
-			for($i = 0; $i < count($user); $i++){
-				unset($user[$i]['User']['password']);
-				unset($user[$i]['User']['salt']);
-				unset($user[$i]['User']['public_access_token']);
-				unset($user[$i]['User']['private_access_token']);
-			}
-			$result['users'] = $user;
-		}
-		else{
-			$result['empty'] = true;
-		}
-		$result['result'] = 'success';
-		return $result;
-	}
 	
 	public function getUserFromFbId($fbId = -1){
 		if($fbId != -1){
@@ -419,9 +348,12 @@ class User extends AppModel {
 	
 	public function add($data){
 		$data['dateTime'] = null;
-		$data['updated'] = 'NOW()';
+		$db = ConnectionManager::getDataSource('users');
+		$data['updated'] = $db->expression('NOW()');
 		$data['bloodstone'] = '1';
 		$data['salt'] = Security::generateAuthKey();
+		$data['private_access_token'] = Security::generateAuthKey();
+		$data['public_access_token'] = Security::generateAuthKey();
 		if ($this->save($data)) {
 			$result['result'] = "success";
 			$result['id'] = $this->id;
@@ -501,7 +433,8 @@ class User extends AppModel {
 	}
 	
 	public function edit($data){
-		$data['updated'] = DboSource::expression('NOW()');
+		$db = ConnectionManager::getDataSource('users');
+		$data['updated'] = $db->expression('NOW()');
 		if( $this->save($data) ){
 			$result['result'] = "success";
 			CakeSession::write('Auth', $this->getUser($data['id']));
@@ -515,7 +448,8 @@ class User extends AppModel {
 	}
 	
 	public function changePass($data){
-		$data['updated'] = DboSource::expression('NOW()');
+		$db = ConnectionManager::getDataSource('users');
+		$data['updated'] = $db->expression('NOW()');
 		$data['salt'] = Security::generateAuthKey();
 		if( $this->save($data) ){
 			$result['result'] = "success";
