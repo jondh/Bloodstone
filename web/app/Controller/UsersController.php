@@ -17,6 +17,9 @@
 		public function loginAjax(){
 			$this->layout = 'ajax';
 			if ($this->request->is('post')) {
+				if($this->Auth->loggedIn()){
+					$this->Auth->logout();
+				}
 				$this->request->data['User']['username'] = $this->request->data['username'];
 				$this->request->data['User']['password'] = $this->request->data['password'];
 				if ($this->Auth->login()) {
@@ -26,8 +29,8 @@
 					return new CakeResponse(array('body' => json_encode($result)));
           	  	}
 				
-				$result['result'] = 'not logged in';
-				return new CakeResponse(array('body' => json_encode($this->request->data )));
+				$result['result'] = 'failure';
+				return new CakeResponse(array('body' => json_encode($result)));
 				
        		}
        		$result['result'] = 'not post';
@@ -39,7 +42,7 @@
 			$this->layout = 'ajax';
 			if($this->request->is('post')){
 				$tokenSuccess = $this->AccessToken->checkAccessTokens($this->request->data['public_token'], $this->request->data['private_token'], $this->request->data['timeStamp']);
-				
+				$this->Auth->logout();
 				$result = $this->User->clearTokens($this->request->data['user_id']);
 				return new CakeResponse(array('body' => json_encode($result)));
 					
